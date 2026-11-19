@@ -1,6 +1,16 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
+function escapeHtml(str) {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -65,14 +75,14 @@ ${message}
                 Deo Exotic Attar & Perfume — New Client Inquiry
               </h2>
               <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-                <tr><td style="padding: 6px 0; color: #a89f91; width: 120px;"><strong>Client:</strong></td><td style="color: #ffffff;">${name}</td></tr>
-                <tr><td style="padding: 6px 0; color: #a89f91;"><strong>Email:</strong></td><td><a href="mailto:${email}" style="color: #d4af37;">${email}</a></td></tr>
-                <tr><td style="padding: 6px 0; color: #a89f91;"><strong>Phone:</strong></td><td style="color: #ffffff;">${phone || 'Not provided'}</td></tr>
-                <tr><td style="padding: 6px 0; color: #a89f91;"><strong>Subject:</strong></td><td style="color: #ffffff;">${subject || 'Fragrance Consultation'}</td></tr>
-                <tr><td style="padding: 6px 0; color: #a89f91;"><strong>Received:</strong></td><td style="color: #a89f91;">${timestamp} IST</td></tr>
+                <tr><td style="padding: 6px 0; color: #a89f91; width: 120px;"><strong>Client:</strong></td><td style="color: #ffffff;">${escapeHtml(name)}</td></tr>
+                <tr><td style="padding: 6px 0; color: #a89f91;"><strong>Email:</strong></td><td><a href="mailto:${escapeHtml(email)}" style="color: #d4af37;">${escapeHtml(email)}</a></td></tr>
+                <tr><td style="padding: 6px 0; color: #a89f91;"><strong>Phone:</strong></td><td style="color: #ffffff;">${escapeHtml(phone || 'Not provided')}</td></tr>
+                <tr><td style="padding: 6px 0; color: #a89f91;"><strong>Subject:</strong></td><td style="color: #ffffff;">${escapeHtml(subject || 'Fragrance Consultation')}</td></tr>
+                <tr><td style="padding: 6px 0; color: #a89f91;"><strong>Received:</strong></td><td style="color: #a89f91;">${escapeHtml(timestamp)} IST</td></tr>
               </table>
               <div style="background: #171513; padding: 16px; border-left: 3px solid #d4af37; margin-top: 16px;">
-                <p style="margin: 0; line-height: 1.6; white-space: pre-wrap; color: #e6dfd5;">${message}</p>
+                <p style="margin: 0; line-height: 1.6; white-space: pre-wrap; color: #e6dfd5;">${escapeHtml(message)}</p>
               </div>
               <p style="font-size: 12px; color: #7a7267; margin-top: 24px; text-align: center;">
                 Sent from Deo Exotic Web Concierge to ${recipient}

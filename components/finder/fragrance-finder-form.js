@@ -87,9 +87,9 @@ export function FragranceFinderForm() {
     setDisplayLimit(12);
   };
 
-  // Filter attars in real time: ONLY when selectedNodes.length >= 2
+  // Filter attars in real time: ONLY when selectedNodes.length >= 1 (No perfumes before nodes selected!)
   const matchingAttars = useMemo(() => {
-    if (!activeArchetype || selectedNodes.length < 2) {
+    if (!activeArchetype || selectedNodes.length === 0) {
       return [];
     }
 
@@ -227,15 +227,18 @@ export function FragranceFinderForm() {
                   fontWeight: 600,
                 }}
               >
-                Step 1 of 3 • Olfactory Persona
+                Step 1 • Fragrance Persona
               </span>
               <h3 style={{ fontSize: 'var(--text-xl)', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-                Who Are You Curating For?
+                Are You Buying For:
               </h3>
+              <p style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-muted)', marginTop: '2px' }}>
+                Select an option below: For Him, For Her, Signature &amp; Shared, Sacred Blooms, or Sweet Elixir
+              </p>
             </div>
             {selectedArchetypeId && (
-              <span style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-muted)' }}>
-                Click any persona to switch collection
+              <span style={{ fontSize: 'var(--text-xs)', color: 'var(--accent)' }}>
+                ✓ Selected: <strong>{activeArchetype?.label}</strong> (click any option to switch)
               </span>
             )}
           </div>
@@ -415,8 +418,7 @@ export function FragranceFinderForm() {
                     Select Your Olfactory Accords
                   </h3>
                   <p style={{ fontSize: 'var(--text-sm)', color: 'var(--ink-soft)', maxWidth: '640px' }}>
-                    Choose <strong>at least 2 fragrance nodes</strong> below to diffuse matching formulations.
-                    Perfume names remain concealed until your accord profile is established.
+                    Select olfactory nodes below to diffuse formulations in real time. You can select <strong>at least 2 nodes</strong> to blend multi-layered accords. Perfume names remain concealed until you select nodes.
                   </p>
                 </div>
 
@@ -435,10 +437,10 @@ export function FragranceFinderForm() {
                     }}
                   >
                     {selectedNodes.length === 0
-                      ? '○ 0 of 2 nodes selected'
+                      ? '○ 0 nodes selected (pick at least 2 to blend)'
                       : selectedNodes.length === 1
-                      ? '◐ 1 of 2 nodes selected (pick 1 more)'
-                      : `● ${selectedNodes.length} nodes active (diffusing formulations)`}
+                      ? '◐ 1 node active • Select at least 1 more node to blend accords'
+                      : `● ${selectedNodes.length} nodes blended • Real-time formulations`}
                   </div>
 
                   {selectedNodes.length > 0 && (
@@ -510,6 +512,26 @@ export function FragranceFinderForm() {
                   );
                 })}
               </div>
+
+              {selectedNodes.length === 0 && (
+                <div
+                  style={{
+                    marginTop: '20px',
+                    padding: '14px 20px',
+                    borderRadius: 'var(--radius-sm)',
+                    background: 'var(--ground-field)',
+                    border: '1px dashed var(--border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                  }}
+                >
+                  <span style={{ color: 'var(--accent)', fontSize: '1.1rem' }}>✦</span>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-soft)' }}>
+                    No perfumes are listed yet. Select at least 2 olfactory nodes above, and our formulations will diffuse here in real time.
+                  </span>
+                </div>
+              )}
             </motion.div>
           ) : (
             /* Prompt if no archetype is chosen yet */
@@ -532,15 +554,15 @@ export function FragranceFinderForm() {
                 Select an Olfactory Persona to Begin
               </h4>
               <p style={{ fontSize: 'var(--text-sm)', color: 'var(--ink-soft)', maxWidth: '480px', margin: '0 auto' }}>
-                Choose who you are curating for above (For Him, For Her, Signature & Shared, Sacred Blooms, or Sweet Elixir) to unlock the artisan fragrance notes.
+                Choose who you are buying for above (For Him, For Her, Signature &amp; Shared, Sacred Blooms, or Sweet Elixir) to reveal the fragrance nodes.
               </p>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* ── STEP 3: REAL-TIME PERFUME RESULTS (Only when ≥ 2 nodes selected) ── */}
+        {/* ── STEP 3: REAL-TIME PERFUME RESULTS (Diffuses when nodes are selected) ── */}
         <AnimatePresence mode="wait">
-          {activeArchetype && selectedNodes.length >= 2 ? (
+          {activeArchetype && selectedNodes.length > 0 && (
             <motion.div
               key="perfume-results-container"
               initial={reducedMotion ? {} : { opacity: 0, y: 24, filter: 'blur(8px)' }}
@@ -621,7 +643,7 @@ export function FragranceFinderForm() {
                   }}
                 >
                   <p style={{ color: 'var(--ink-soft)', marginBottom: '8px' }}>
-                    No formulations match "{searchQuery}" under the selected notes.
+                    No formulations match &ldquo;{searchQuery}&rdquo; under the selected notes.
                   </p>
                   <button
                     type="button"
@@ -812,65 +834,7 @@ export function FragranceFinderForm() {
                 </div>
               )}
             </motion.div>
-          ) : activeArchetype ? (
-            /* Locked State when < 2 nodes selected */
-            <motion.div
-              key="awaiting-nodes-state"
-              initial={reducedMotion ? {} : { opacity: 0 }}
-              animate={reducedMotion ? {} : { opacity: 1 }}
-              exit={reducedMotion ? {} : { opacity: 0 }}
-              style={{
-                textAlign: 'center',
-                padding: '56px 24px',
-                background: 'var(--ground-raised)',
-                border: '1px dashed var(--border)',
-                borderRadius: 'var(--radius-lg)',
-                marginBottom: '40px',
-              }}
-            >
-              <div
-                style={{
-                  width: '52px',
-                  height: '52px',
-                  borderRadius: '50%',
-                  background: 'var(--ground-field)',
-                  border: '1px solid var(--border)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 16px',
-                  color: 'var(--accent)',
-                  fontSize: '1.4rem',
-                }}
-              >
-                ⚗
-              </div>
-              <h4 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-xl)', color: 'var(--ink)', marginBottom: '8px' }}>
-                Formulations Resting in Darkness
-              </h4>
-              <p style={{ fontSize: 'var(--text-sm)', color: 'var(--ink-soft)', maxWidth: '480px', margin: '0 auto 16px' }}>
-                Please select <strong>at least 2 olfactory nodes</strong> above to begin hydro-distillation.
-                The matching perfume collection will diffuse in real time once your accords are locked.
-              </p>
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontSize: 'var(--text-xs)',
-                  color: 'var(--accent)',
-                  background: 'var(--ground-field)',
-                  padding: '6px 14px',
-                  borderRadius: '999px',
-                  border: '1px solid var(--border)',
-                }}
-              >
-                <span>Requires 2+ nodes</span>
-                <span>•</span>
-                <span>Currently {selectedNodes.length} selected</span>
-              </div>
-            </motion.div>
-          ) : null}
+          )}
         </AnimatePresence>
 
         {/* ── STEP 4: PACKAGING SELECTION STAGE (Slides in when attars are selected) ── */}
