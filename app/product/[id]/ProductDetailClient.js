@@ -8,6 +8,9 @@ import { products, formatPrice } from '../../data/products';
 import { ProductCard } from '../../components/ProductCard';
 import { useCart } from '../../context/CartContext';
 import { Breadcrumbs } from '../../components/Breadcrumbs';
+import { DiffusionText } from '@/components/ui/diffusion-text';
+import { ScrollEncryptedText } from '@/components/ui/scroll-encrypted-text';
+import { NotesAccordion } from '@/components/ui/notes-accordion';
 import styles from './product.module.css';
 
 export default function ProductDetailClient({ product }) {
@@ -119,8 +122,14 @@ export default function ProductDetailClient({ product }) {
           {/* Details */}
           <div className={styles.details}>
             <span className={styles.category}>{product.category}</span>
-            <h1 className={styles.title}>{product.name}</h1>
-            <p className={styles.tagline}>{product.tagline || product.description}</p>
+            <DiffusionText as="h1" className={styles.title}>
+              {product.name}
+            </DiffusionText>
+            <ScrollEncryptedText
+              text={product.tagline || product.description}
+              className={styles.tagline}
+              delay={0.15}
+            />
 
             <div className={styles.priceRow}>
               <span className={styles.price}>{formatPrice(currentPrice)}</span>
@@ -195,21 +204,7 @@ export default function ProductDetailClient({ product }) {
 
             {/* Olfactory Notes Pyramid */}
             {product.notes && (
-              <div className={styles.pyramidCard}>
-                <h3 className={styles.pyramidTitle}>Olfactory Notes Composition</h3>
-                <div className={styles.noteItem}>
-                  <span className={styles.noteLabel}>Head Notes:</span>
-                  <span className={styles.noteContent}>{product.notes.top}</span>
-                </div>
-                <div className={styles.noteItem}>
-                  <span className={styles.noteLabel}>Heart Notes:</span>
-                  <span className={styles.noteContent}>{product.notes.heart}</span>
-                </div>
-                <div className={styles.noteItem}>
-                  <span className={styles.noteLabel}>Base Notes:</span>
-                  <span className={styles.noteContent}>{product.notes.base}</span>
-                </div>
-              </div>
+              <NotesAccordion notes={product.notes} />
             )}
 
             {/* Highlights Grid */}
@@ -294,7 +289,7 @@ export default function ProductDetailClient({ product }) {
               {product.reviews.map((rev, i) => (
                 <div key={i} className={styles.reviewCard}>
                   <div className={styles.stars}>★★★★★</div>
-                  <p className={styles.reviewComment}>"{rev.comment}"</p>
+                  <p className={styles.reviewComment}>&ldquo;{rev.comment}&rdquo;</p>
                   <div className={styles.reviewAuthor}>
                     <strong>{rev.author}</strong> • <span>Verified Connoisseur</span>
                   </div>
