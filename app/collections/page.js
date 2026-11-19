@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Breadcrumbs } from '../components/Breadcrumbs';
+import { DiffusionText } from '@/components/ui/diffusion-text';
+import { ScrollEncryptedText } from '@/components/ui/scroll-encrypted-text';
 import styles from './collections.module.css';
 
 export const metadata = {
@@ -75,10 +77,14 @@ export default function CollectionsPage() {
         <div className="container">
           <Breadcrumbs items={breadcrumbs} />
           <span className={styles.eyebrow}>Curated Distillations</span>
-          <h1 className={styles.heroTitle}>Our Olfactory Collections</h1>
-          <p className={styles.heroDesc}>
-            Each collection represents a distinct chapter in the royal history of Indian and Oriental perfumery, distilled with uncompromising purity.
-          </p>
+          <DiffusionText as="h1" className={styles.heroTitle}>
+            Our Olfactory Collections
+          </DiffusionText>
+          <ScrollEncryptedText
+            text="Each collection represents a distinct chapter in the royal history of Indian and Oriental perfumery, distilled with uncompromising purity."
+            className={styles.heroDesc}
+            delay={0.2}
+          />
         </div>
       </section>
 

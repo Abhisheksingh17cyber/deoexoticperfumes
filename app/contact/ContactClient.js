@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Breadcrumbs } from '../components/Breadcrumbs';
+import { DiffusionText } from '@/components/ui/diffusion-text';
+import { ScrollEncryptedText } from '@/components/ui/scroll-encrypted-text';
 import styles from './contact.module.css';
 
 const faqs = [
@@ -83,10 +85,14 @@ export function ContactClient() {
         <div className="container">
           <Breadcrumbs items={breadcrumbs} />
           <span className={styles.eyebrow}>Artisan Concierge</span>
-          <h1 className={styles.heroTitle}>Bespoke Fragrance Consultation & Concierge</h1>
-          <p className={styles.heroDesc}>
-            Whether you are seeking advice on layering notes, seeking a rare reserve distillation, or planning luxury gifts, our master perfumers are at your service.
-          </p>
+          <DiffusionText as="h1" className={styles.heroTitle}>
+            Bespoke Fragrance Consultation & Concierge
+          </DiffusionText>
+          <ScrollEncryptedText
+            text="Whether you are seeking advice on layering notes, seeking a rare reserve distillation, or planning luxury gifts, our master perfumers are at your service."
+            className={styles.heroDesc}
+            delay={0.2}
+          />
         </div>
       </section>
 
